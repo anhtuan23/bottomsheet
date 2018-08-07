@@ -383,9 +383,9 @@ public class BottomSheetLayout extends FrameLayout {
             } else {
                 // Make delta less effective when sheet is below the minimum translation.
                 // This makes it feel like scrolling in jello which gives the user an indication that the sheet will be dismissed if they let go.
-                if (newSheetTranslation < peekSheetTranslation) {
-                    newSheetTranslation = peekSheetTranslation - (peekSheetTranslation - newSheetTranslation) / 4f;
-                }
+//                if (newSheetTranslation < peekSheetTranslation) {
+//                    newSheetTranslation = peekSheetTranslation - (peekSheetTranslation - newSheetTranslation) / 4f;
+//                }
 
                 setSheetTranslation(newSheetTranslation);
 
