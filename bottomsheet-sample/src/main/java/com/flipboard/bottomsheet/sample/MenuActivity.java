@@ -39,7 +39,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void showMenuSheet(final MenuSheetView.MenuType menuType) {
         MenuSheetView menuSheetView =
-                new MenuSheetView(MenuActivity.this, menuType, "Create...", new MenuSheetView.OnMenuItemClickListener() {
+                new MenuSheetView(MenuActivity.this, menuType, "Create...", 0xff000000, new MenuSheetView.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         Toast.makeText(MenuActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
