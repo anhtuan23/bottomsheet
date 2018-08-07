@@ -55,7 +55,9 @@ public class MenuSheetView extends FrameLayout {
     /**
      * The supported display types for the menu items.
      */
-    public enum MenuType {LIST, GRID}
+    public enum MenuType {
+        LIST, GRID
+    }
 
     private Menu menu;
     private final MenuType menuType;
@@ -67,9 +69,14 @@ public class MenuSheetView extends FrameLayout {
     private int columnWidthDp = 100;
     private int listItemLayoutRes = DEFAULT_LAYOUT_LIST_ITEM;
     private int gridItemLayoutRes = DEFAULT_LAYOUT_GRID_ITEM;
+    private boolean isSelectable = false;
+    private int normalColorInt = 0xff000000;
+    private int selectedColorInt = 0xff0a84ff;
+    private int selectedBackgroundColorInt = 0x330a84ff;
+    private int selectedItemId;
 
     /**
-     * @param context Context to construct the view with
+     * @param context  Context to construct the view with
      * @param menuType LIST or GRID
      * @param titleRes String resource ID for the title
      * @param listener Listener for menu item clicks in the sheet
@@ -79,9 +86,9 @@ public class MenuSheetView extends FrameLayout {
     }
 
     /**
-     * @param context Context to construct the view with
+     * @param context  Context to construct the view with
      * @param menuType LIST or GRID
-     * @param title Title for the sheet. Can be null
+     * @param title    Title for the sheet. Can be null
      * @param listener Listener for menu item clicks in the sheet
      */
     public MenuSheetView(final Context context, final MenuType menuType, @Nullable final CharSequence title, final OnMenuItemClickListener listener) {
@@ -153,7 +160,7 @@ public class MenuSheetView extends FrameLayout {
     /**
      * Flattens the visible menu items of {@link #menu} into {@link #items},
      * while inserting separators between items when necessary.
-     *
+     * <p>
      * Adapted from the Design support library's NavigationMenuPresenter implementation
      */
     private void prepareMenuItems() {
@@ -204,7 +211,7 @@ public class MenuSheetView extends FrameLayout {
 
     /**
      * @return The current {@link Menu} instance backing this sheet. Note that this is mutable, and
-     *         you should call {@link #updateMenu()} after any changes.
+     * you should call {@link #updateMenu()} after any changes.
      */
     public Menu getMenu() {
         return this.menu;
@@ -261,6 +268,7 @@ public class MenuSheetView extends FrameLayout {
     /**
      * Override the layout for displaying a list item when of type {@link MenuType#LIST}. <br>
      * Call this before you attach to window using {@link com.flipboard.bottomsheet.BottomSheetLayout#showWithSheetView}.
+     *
      * @param listItemLayoutRes needs to have an {@link ImageView} with id set to {@link R.id#icon} and {@link TextView} with id set to {@link R.id#label}
      */
     public void setListItemLayoutRes(@LayoutRes int listItemLayoutRes) {
@@ -270,10 +278,31 @@ public class MenuSheetView extends FrameLayout {
     /**
      * Override the layout for displaying a grid item when of type {@link MenuType#GRID}. <br>
      * Call this before you attach to window using {@link com.flipboard.bottomsheet.BottomSheetLayout#showWithSheetView}.
+     *
      * @param gridItemLayoutRes needs to have an {@link ImageView} with id set to {@link R.id#icon} and {@link TextView} with id set to {@link R.id#label}
      */
     public void setGridItemLayoutRes(@LayoutRes int gridItemLayoutRes) {
         this.gridItemLayoutRes = gridItemLayoutRes;
+    }
+
+    public void setIsSelectable(boolean isSelectable) {
+        this.isSelectable = isSelectable;
+    }
+
+    public void setNormalColorInt(int colorInt) {
+        this.normalColorInt = colorInt;
+    }
+
+    public void setSelectedColorInt(int colorInt) {
+        this.selectedColorInt = colorInt;
+    }
+
+    public void setSelectedBackgroundColorInt(int colorInt) {
+        this.selectedBackgroundColorInt = colorInt;
+    }
+
+    public void setSelectedItemId(int itemId) {
+        this.selectedItemId = itemId;
     }
 
 
@@ -344,7 +373,7 @@ public class MenuSheetView extends FrameLayout {
                     } else {
                         holder = (NormalViewHolder) convertView.getTag();
                     }
-                    holder.bindView(item);
+                    holder.bindView(item, item.isSelected(selectedItemId));
                     break;
                 case VIEW_TYPE_SUBHEADER:
                     if (convertView == null) {
@@ -376,15 +405,30 @@ public class MenuSheetView extends FrameLayout {
         class NormalViewHolder {
             final ImageView icon;
             final TextView label;
+            final FrameLayout frameLayout; //only for list type
 
             NormalViewHolder(View root) {
                 icon = (ImageView) root.findViewById(R.id.icon);
                 label = (TextView) root.findViewById(R.id.label);
+                frameLayout = (FrameLayout) root.findViewById(R.id.frame);
             }
 
-            public void bindView(SheetMenuItem item) {
+            public void bindView(SheetMenuItem item, boolean isSelected) {
                 icon.setImageDrawable(item.getMenuItem().getIcon());
                 label.setText(item.getMenuItem().getTitle());
+                if (isSelectable) {
+                    int color = normalColorInt;
+                    if (isSelected) {
+                        color = selectedColorInt;
+                        if (frameLayout != null)
+                            frameLayout.setBackgroundColor(selectedBackgroundColorInt);
+                    } else {
+                        if (frameLayout != null)
+                            frameLayout.setBackgroundColor(0x00000000);//transparent
+                    }
+                    icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+                    label.setTextColor(color);
+                }
             }
         }
     }
@@ -416,5 +460,8 @@ public class MenuSheetView extends FrameLayout {
             return menuItem != null && !menuItem.hasSubMenu() && menuItem.isEnabled();
         }
 
+        public boolean isSelected(int selectedItemId) {
+            return menuItem.getItemId() == selectedItemId;
+        }
     }
 }
