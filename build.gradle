@@ -3,9 +3,10 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath 'com.novoda:bintray-release:0.3.4'
     }
 }
@@ -13,6 +14,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        google()
     }
 }
 
@@ -51,10 +53,10 @@ task version << {
     println version()
 }
 
-def String version() {
-    def versionPropsFile = file('version.properties')
-    def Properties versionProps = new Properties()
-    versionProps.load(new FileInputStream(versionPropsFile))
-
-    return versionProps['major'] + "." + versionProps['minor'] + "." + versionProps['patch']
-}
+//def String version() {
+//    def versionPropsFile = file('version.properties')
+//    def Properties versionProps = new Properties()
+//    versionProps.load(new FileInputStream(versionPropsFile))
+//
+//    return versionProps['major'] + "." + versionProps['minor'] + "." + versionProps['patch']
+//}
