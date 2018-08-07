@@ -76,8 +76,11 @@ public class BottomSheetLayout extends FrameLayout {
         void onSheetStateChanged(State state);
     }
 
-    private static final long ANIMATION_DURATION = 300;
+    private static final long DEFAULT_ANIMATION_DURATION = 300;
 
+    private long peekAnimationDuration = DEFAULT_ANIMATION_DURATION;
+    private long expandAnimationDuration = DEFAULT_ANIMATION_DURATION;
+    private long dismissAnimationDuration = DEFAULT_ANIMATION_DURATION;
     private Rect contentClipRect = new Rect();
     private State state = State.HIDDEN;
     private boolean peekOnDismiss = false;
@@ -480,6 +483,24 @@ public class BottomSheetLayout extends FrameLayout {
         }
     }
 
+    public void setPeekAnimationDuration(long duration) {
+        this.peekAnimationDuration = duration;
+    }
+
+    public void setExpandAnimationDuration(long duration) {
+        this.expandAnimationDuration = duration;
+    }
+
+    public void setDismissAnimationDuration(long duration) {
+        this.dismissAnimationDuration = duration;
+    }
+
+    public void setAllAnimationDuration(long duration) {
+        this.peekAnimationDuration = duration;
+        this.expandAnimationDuration = duration;
+        this.dismissAnimationDuration = duration;
+    }
+
     private boolean hasTallerKeylineHeightSheet() {
         return getSheetView() == null || getSheetView().getHeight() > peekKeyline;
     }
@@ -506,7 +527,7 @@ public class BottomSheetLayout extends FrameLayout {
         cancelCurrentAnimation();
         setSheetLayerTypeIfEnabled(LAYER_TYPE_NONE);
         ObjectAnimator anim = ObjectAnimator.ofFloat(this, SHEET_TRANSLATION, getMaxSheetTranslation());
-        anim.setDuration(ANIMATION_DURATION);
+        anim.setDuration(expandAnimationDuration);
         anim.setInterpolator(animationInterpolator);
         anim.addListener(new CancelDetectionAnimationListener() {
             @Override
@@ -528,7 +549,7 @@ public class BottomSheetLayout extends FrameLayout {
         cancelCurrentAnimation();
         setSheetLayerTypeIfEnabled(LAYER_TYPE_HARDWARE);
         ObjectAnimator anim = ObjectAnimator.ofFloat(this, SHEET_TRANSLATION, getPeekSheetTranslation());
-        anim.setDuration(ANIMATION_DURATION);
+        anim.setDuration(peekAnimationDuration);
         anim.setInterpolator(animationInterpolator);
         anim.addListener(new CancelDetectionAnimationListener() {
             @Override
@@ -713,7 +734,7 @@ public class BottomSheetLayout extends FrameLayout {
         sheetView.removeOnLayoutChangeListener(sheetViewOnLayoutChangeListener);
         cancelCurrentAnimation();
         ObjectAnimator anim = ObjectAnimator.ofFloat(this, SHEET_TRANSLATION, 0);
-        anim.setDuration(ANIMATION_DURATION);
+        anim.setDuration(dismissAnimationDuration);
         anim.setInterpolator(animationInterpolator);
         anim.addListener(new CancelDetectionAnimationListener() {
             @Override
