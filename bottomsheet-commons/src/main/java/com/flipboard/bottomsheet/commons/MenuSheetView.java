@@ -3,6 +3,7 @@ package com.flipboard.bottomsheet.commons;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MenuRes;
 import android.support.annotation.Nullable;
@@ -70,8 +71,11 @@ public class MenuSheetView extends FrameLayout {
     private int listItemLayoutRes = DEFAULT_LAYOUT_LIST_ITEM;
     private int gridItemLayoutRes = DEFAULT_LAYOUT_GRID_ITEM;
     private boolean isSelectable = false;
+    @ColorInt
     private int normalColorInt = 0xff000000;
+    @ColorInt
     private int selectedColorInt = 0xff0a84ff;
+    @ColorInt
     private int selectedBackgroundColorInt = 0x330a84ff;
     private int selectedItemId;
 
@@ -81,17 +85,20 @@ public class MenuSheetView extends FrameLayout {
      * @param titleRes String resource ID for the title
      * @param listener Listener for menu item clicks in the sheet
      */
-    public MenuSheetView(final Context context, final MenuType menuType, @StringRes final int titleRes, final OnMenuItemClickListener listener) {
-        this(context, menuType, context.getString(titleRes), listener);
+    public MenuSheetView(final Context context, final MenuType menuType, @StringRes final int titleRes
+            , @ColorInt int titleColorInt, final OnMenuItemClickListener listener) {
+        this(context, menuType, context.getString(titleRes), titleColorInt, listener);
     }
 
     /**
-     * @param context  Context to construct the view with
-     * @param menuType LIST or GRID
-     * @param title    Title for the sheet. Can be null
-     * @param listener Listener for menu item clicks in the sheet
+     * @param context       Context to construct the view with
+     * @param menuType      LIST or GRID
+     * @param title         Title for the sheet. Can be null
+     * @param titleColorInt Color of Title. Must be ColorInt
+     * @param listener      Listener for menu item clicks in the sheet
      */
-    public MenuSheetView(final Context context, final MenuType menuType, @Nullable final CharSequence title, final OnMenuItemClickListener listener) {
+    public MenuSheetView(final Context context, final MenuType menuType
+            , @Nullable final CharSequence title, @ColorInt int titleColorInt, final OnMenuItemClickListener listener) {
         super(context);
 
         // Set up the menu
@@ -113,7 +120,7 @@ public class MenuSheetView extends FrameLayout {
         // Set up the title
         titleView = (TextView) findViewById(R.id.title);
         originalListPaddingTop = absListView.getPaddingTop();
-        setTitle(title);
+        setTitle(title, titleColorInt);
 
         ViewCompat.setElevation(this, Util.dp2px(getContext(), 16f));
     }
@@ -238,8 +245,8 @@ public class MenuSheetView extends FrameLayout {
      *
      * @param resId String resource ID for the text
      */
-    public void setTitle(@StringRes int resId) {
-        setTitle(getResources().getText(resId));
+    public void setTitle(@StringRes int resId, @ColorInt int colorInt) {
+        setTitle(getResources().getText(resId), colorInt);
     }
 
     /**
@@ -247,9 +254,10 @@ public class MenuSheetView extends FrameLayout {
      *
      * @param title Title text to use
      */
-    public void setTitle(CharSequence title) {
+    public void setTitle(CharSequence title, @ColorInt int colorInt) {
         if (!TextUtils.isEmpty(title)) {
             titleView.setText(title);
+            titleView.setTextColor(colorInt);
         } else {
             titleView.setVisibility(GONE);
 
