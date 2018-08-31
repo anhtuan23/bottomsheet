@@ -414,6 +414,10 @@ public class MenuSheetView extends FrameLayout {
                     if (convertView == null) {
                         convertView = inflater.inflate(R.layout.sheet_list_item_separator, parent, false);
                     }
+                    View divider = convertView.findViewById(R.id.divider);
+                    if (divider != null) {
+                        divider.setBackgroundColor(normalColorInt);
+                    }
                     break;
             }
 
