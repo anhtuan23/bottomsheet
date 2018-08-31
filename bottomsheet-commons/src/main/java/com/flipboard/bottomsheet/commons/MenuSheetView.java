@@ -24,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -76,6 +77,8 @@ public class MenuSheetView extends FrameLayout {
     @ColorInt
     private int selectedColorInt = 0xff0a84ff;
     @ColorInt
+    private int normalBackgroundColorInt = 0xffffffff;
+    @ColorInt
     private int selectedBackgroundColorInt = 0x330a84ff;
     private int selectedItemId;
 
@@ -85,9 +88,13 @@ public class MenuSheetView extends FrameLayout {
      * @param titleRes String resource ID for the title
      * @param listener Listener for menu item clicks in the sheet
      */
-    public MenuSheetView(final Context context, final MenuType menuType, @StringRes final int titleRes
-            , @ColorInt int titleColorInt, final OnMenuItemClickListener listener) {
-        this(context, menuType, context.getString(titleRes), titleColorInt, listener);
+    public MenuSheetView(final Context context
+            , final MenuType menuType
+            , @StringRes final int titleRes
+            , @ColorInt int titleColorInt
+            , @ColorInt int backgroundColorInt
+            , final OnMenuItemClickListener listener) {
+        this(context, menuType, context.getString(titleRes), titleColorInt, backgroundColorInt, listener);
     }
 
     /**
@@ -97,8 +104,12 @@ public class MenuSheetView extends FrameLayout {
      * @param titleColorInt Color of Title. Must be ColorInt
      * @param listener      Listener for menu item clicks in the sheet
      */
-    public MenuSheetView(final Context context, final MenuType menuType
-            , @Nullable final CharSequence title, @ColorInt int titleColorInt, final OnMenuItemClickListener listener) {
+    public MenuSheetView(final Context context
+            , final MenuType menuType
+            , @Nullable final CharSequence title
+            , @ColorInt int titleColorInt
+            , @ColorInt int backgroundColorInt
+            , final OnMenuItemClickListener listener) {
         super(context);
 
         // Set up the menu
@@ -121,6 +132,11 @@ public class MenuSheetView extends FrameLayout {
         titleView = (TextView) findViewById(R.id.title);
         originalListPaddingTop = absListView.getPaddingTop();
         setTitle(title, titleColorInt);
+
+        //Set up background layout
+        LinearLayout background = (LinearLayout) findViewById(R.id.background);
+        background.setBackgroundColor(backgroundColorInt);
+        normalBackgroundColorInt = backgroundColorInt;
 
         ViewCompat.setElevation(this, Util.dp2px(getContext(), 16f));
     }
@@ -305,6 +321,10 @@ public class MenuSheetView extends FrameLayout {
         this.selectedColorInt = colorInt;
     }
 
+    public void setNormalBackgroundColorInt(int colorInt) {
+        this.normalBackgroundColorInt = colorInt;
+    }
+
     public void setSelectedBackgroundColorInt(int colorInt) {
         this.selectedBackgroundColorInt = colorInt;
     }
@@ -432,7 +452,7 @@ public class MenuSheetView extends FrameLayout {
                             frameLayout.setBackgroundColor(selectedBackgroundColorInt);
                     } else {
                         if (frameLayout != null)
-                            frameLayout.setBackgroundColor(0x00000000);//transparent
+                            frameLayout.setBackgroundColor(normalBackgroundColorInt);//transparent
                     }
                     icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
                     label.setTextColor(color);
