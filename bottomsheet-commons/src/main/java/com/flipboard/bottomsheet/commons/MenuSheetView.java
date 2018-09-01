@@ -80,6 +80,8 @@ public class MenuSheetView extends FrameLayout {
     private int normalBackgroundColorInt = 0xffffffff;
     @ColorInt
     private int selectedBackgroundColorInt = 0x330a84ff;
+    @ColorInt
+    private int separatorColorInt = 0xff000000;
     private int selectedItemId;
 
     /**
@@ -93,8 +95,9 @@ public class MenuSheetView extends FrameLayout {
             , @StringRes final int titleRes
             , @ColorInt int titleColorInt
             , @ColorInt int backgroundColorInt
+            , @ColorInt int separatorColor
             , final OnMenuItemClickListener listener) {
-        this(context, menuType, context.getString(titleRes), titleColorInt, backgroundColorInt, listener);
+        this(context, menuType, context.getString(titleRes), titleColorInt, backgroundColorInt, separatorColor, listener);
     }
 
     /**
@@ -109,6 +112,7 @@ public class MenuSheetView extends FrameLayout {
             , @Nullable final CharSequence title
             , @ColorInt int titleColorInt
             , @ColorInt int backgroundColorInt
+            , @ColorInt int separatorColor
             , final OnMenuItemClickListener listener) {
         super(context);
 
@@ -137,6 +141,8 @@ public class MenuSheetView extends FrameLayout {
         LinearLayout background = (LinearLayout) findViewById(R.id.background);
         background.setBackgroundColor(backgroundColorInt);
         normalBackgroundColorInt = backgroundColorInt;
+
+        separatorColorInt = separatorColor;
 
         ViewCompat.setElevation(this, Util.dp2px(getContext(), 16f));
     }
@@ -416,7 +422,7 @@ public class MenuSheetView extends FrameLayout {
                     }
                     View divider = convertView.findViewById(R.id.divider);
                     if (divider != null) {
-                        divider.setBackgroundColor(normalColorInt);
+                        divider.setBackgroundColor(separatorColorInt);
                     }
                     break;
             }
