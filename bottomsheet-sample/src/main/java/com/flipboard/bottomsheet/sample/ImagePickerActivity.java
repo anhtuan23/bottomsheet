@@ -61,7 +61,7 @@ public final class ImagePickerActivity extends AppCompatActivity {
     }
 
     private boolean checkNeedsPermission() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && ActivityCompat.checkSelfPermission(ImagePickerActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+        return ActivityCompat.checkSelfPermission(ImagePickerActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
